@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Agricure{% endblock %}</title>
+    {% load static %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-gray-50 flex flex-col min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm border-b border-green-100 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <a
+            href="{% if user.is_authenticated %}{% url 'diagnosis:dashboard' %}{% else %}{% url 'users:login' %}{% endif %}"
+            class="flex items-center space-x-2"
+            data-no-ajax
+          >
+            <i data-lucide="sprout" class="h-8 w-8 text-green-600"></i>
+            <span class="font-bold text-xl text-gray-900">Agricure</span>
+          </a>
+
+          <!-- Desktop Navigation -->
+          <div class="hidden md:flex items-center space-x-8">
+            {% if user.is_authenticated %}
+            <a
+              href="{% url 'diagnosis:dashboard' %}"
+              class="px-3 py-2 rounded-md text-sm font-medium transition-colors {% if request.resolver_match.url_name == 'dashboard' %}text-green-600 bg-green-50{% else %}text-gray-700 hover:text-green-600 hover:bg-green-50{% endif %}"
+              data-no-ajax
+            >
+              Dashboard
+            </a>
+            <a
+              href="{% url 'recommendations:list' %}"
+              class="px-3 py-2 rounded-md text-sm font-medium transition-colors {% if request.resolver_match.url_name == 'list' and request.resolver_match.namespace == 'recommendations' %}text-green-600 bg-green-50{% else %}text-gray-700 hover:text-green-600 hover:bg-green-50{% endif %}"
+              data-no-ajax
+            >
+              Recommendations
+            </a>
+            <a
+              href="{% url 'diagnosis:history' %}"
+              class="px-3 py-2 rounded-md text-sm font-medium transition-colors {% if request.resolver_match.url_name == 'history' %}text-green-600 bg-green-50{% else %}text-gray-700 hover:text-green-600 hover:bg-green-50{% endif %}"
+              data-no-ajax
+            >
+              History
+            </a>
+            <a
+              href="{% url 'iot:dashboard' %}"
+              class="px-3 py-2 rounded-md text-sm font-medium transition-colors {% if request.resolver_match.namespace == 'iot' %}text-green-600 bg-green-50{% else %}text-gray-700 hover:text-green-600 hover:bg-green-50{% endif %}"
+              data-no-ajax
+            >
+              IoT Data
+            </a>
+            {% comment %} Admin link - uncomment if admin panel is needed
+            {% if user.is_staff %}
+            <a
+              href="/admin/"
+              class="px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-700 hover:text-green-600 hover:bg-green-50"
+              data-no-ajax
+            >
+              Admin
+            </a>
+            {% endif %}
+            {% endcomment %}
+            {% endif %}
+          </div>
+
+          <!-- User Menu -->
+          <div class="flex items-center space-x-4">
+            {% if user.is_authenticated %}
+            <!-- Notification Bell -->
+            <button
+              class="p-2 text-gray-500 hover:text-green-600 transition-colors"
+              id="notification-bell"
+            >
+              <i data-lucide="bell" class="h-5 w-5"></i>
+            </button>
+
+            <!-- Profile Dropdown -->
+            <div class="relative">
+              <button
+                id="profile-menu-button"
+                class="flex items-center space-x-2 p-2 rounded-md hover:bg-green-50 transition-colors"
+              >
+                <div
+                  class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center"
+                >
+                  <i data-lucide="user" class="h-4 w-4 text-white"></i>
+                </div>
+                <span class="hidden md:block text-sm font-medium text-gray-700">
+                  {% if user.first_name and user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}
+                </span>
+              </button>
+
+              <!-- Dropdown Menu -->
+              <div
+                id="profile-dropdown"
+                class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1"
+              >
+                <div class="px-4 py-2 border-b border-gray-100">
+                  <p class="text-sm font-medium text-gray-900">
+                    {% if user.first_name and user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}
+                  </p>
+                  <p class="text-xs text-gray-500">{{ user.email }}</p>
+                  {% if user.is_staff %}
+                  <p class="text-xs text-green-600 capitalize">admin</p>
+                  {% else %}
+                  <p class="text-xs text-green-600 capitalize">user</p>
+                  {% endif %}
+                </div>
+                <a
+                  href="#"
+                  class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50"
+                  onclick="handleProfileClick(event)"
+                  data-no-ajax
+                >
+                  <i data-lucide="settings" class="h-4 w-4 mr-2"></i>
+                  Profile Settings
+                </a>
+                <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+                  {% csrf_token %}
+                  <button
+                    type="submit"
+                    class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 border-0 bg-transparent cursor-pointer"
+                  >
+                    <i data-lucide="log-out" class="h-4 w-4 mr-2"></i>
+                    Sign Out
+                  </button>
+                </form>
+              </div>
+            </div>
+            {% else %}
+            <!-- Guest User Menu -->
+            <div class="flex items-center space-x-4">
+              <a
+                href="{% url 'users:login' %}"
+                class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium"
+                data-no-ajax
+              >
+                Sign In
+              </a>
+              <a
+                href="{% url 'users:register' %}"
+                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                data-no-ajax
+              >
+                Get Started
+              </a>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Mobile menu button -->
+            <button
+              id="mobile-menu-button"
+              class="md:hidden p-2 rounded-md text-gray-700 hover:text-green-600 hover:bg-green-50"
+              onclick="toggleMobileMenu()"
+            >
+              <i data-lucide="menu" class="h-6 w-6" id="menu-icon"></i>
+              <i data-lucide="x" class="h-6 w-6 hidden" id="close-icon"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden bg-white border-t border-gray-200"
+      >
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          {% if user.is_authenticated %}
+          <a
+            href="{% url 'diagnosis:dashboard' %}"
+            class="block px-3 py-2 rounded-md text-base font-medium {% if request.resolver_match.url_name == 'dashboard' %}text-green-600 bg-green-50{% else %}text-gray-700 hover:text-green-600 hover:bg-green-50{% endif %}"
+            data-no-ajax
+          >
+            Dashboard
+          </a>
+          <a
+            href="{% url 'recommendations:list' %}"
+            class="block px-3 py-2 rounded-md text-base font-medium {% if request.resolver_match.url_name == 'list' and request.resolver_match.namespace == 'recommendations' %}text-green-600 bg-green-50{% else %}text-gray-700 hover:text-green-600 hover:bg-green-50{% endif %}"
+            data-no-ajax
+          >
+            Recommendations
+          </a>
+          <a
+            href="{% url 'diagnosis:history' %}"
+            class="block px-3 py-2 rounded-md text-base font-medium {% if request.resolver_match.url_name == 'history' %}text-green-600 bg-green-50{% else %}text-gray-700 hover:text-green-600 hover:bg-green-50{% endif %}"
+            data-no-ajax
+          >
+            History
+          </a>
+          <a
+            href="{% url 'iot:dashboard' %}"
+            class="block px-3 py-2 rounded-md text-base font-medium {% if request.resolver_match.namespace == 'iot' %}text-green-600 bg-green-50{% else %}text-gray-700 hover:text-green-600 hover:bg-green-50{% endif %}"
+            data-no-ajax
+          >
+            IoT Data
+          </a>
+          {% else %}
+          <a
+            href="{% url 'users:login' %}"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-green-50"
+            data-no-ajax
+          >
+            Sign In
+          </a>
+          <a
+            href="{% url 'users:register' %}"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-green-50"
+            data-no-ajax
+          >
+            Get Started
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1" id="main-content">
+      {% block content %} {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="text-center text-sm text-gray-500">
+          © 2024 Agricure. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // Simple mobile menu toggle
+      function toggleMobileMenu() {
+        console.log("Mobile menu toggle clicked");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const menuIcon = document.getElementById("menu-icon");
+        const closeIcon = document.getElementById("close-icon");
+
+        if (mobileMenu.classList.contains("hidden")) {
+          mobileMenu.classList.remove("hidden");
+          menuIcon.classList.add("hidden");
+          closeIcon.classList.remove("hidden");
+        } else {
+          mobileMenu.classList.add("hidden");
+          menuIcon.classList.remove("hidden");
+          closeIcon.classList.add("hidden");
+        }
+      }
+
+      // Simple profile dropdown toggle
+    </script>
+
+    <!-- Include shared utilities first -->
+    <script src="{% static 'js/shared/common.js' %}?v=2"></script>
+    <script src="{% static 'js/shared/navbar.js' %}?v=2"></script>
+
+    <!-- Include the main app.js for dynamic script loading -->
+    <script src="{% static 'js/app.js' %}?v=2"></script>
+
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

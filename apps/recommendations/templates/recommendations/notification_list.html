@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title|default:"Recommendations & Alerts - Agricure" }}{% endblock %}
+
+{% block content %}
+    {% include 'recommendations/_notification_list_partial.html' %}
+{% endblock %}
+
+{% block extra_js %}
+{# This block is now empty as the script has been moved to base.html #}
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% load static %} {% block title %}IoT Dashboard -
+Agricure{% endblock %} {% block content %} 
+{% include 'iot/_dashboard_partial.html' %} 
+{% endblock %} {% block extra_js %}
+<style>
+  .status-critical {
+    color: #dc2626;
+    background-color: #fee2e2;
+  }
+  .status-warning {
+    color: #d97706;
+    background-color: #fef3c7;
+  }
+  .status-optimal {
+    color: #059669;
+    background-color: #d1fae5;
+  }
+
+  .alert-red {
+    border-left: 4px solid #ef4444;
+    background-color: #fef2f2;
+    color: #991b1b;
+  }
+  .alert-yellow {
+    border-left: 4px solid #f59e0b;
+    background-color: #fffbeb;
+    color: #92400e;
+  }
+  .alert-orange {
+    border-left: 4px solid #f97316;
+    background-color: #fff7ed;
+    color: #9a3412;
+  }
+  .alert-green {
+    border-left: 4px solid #10b981;
+    background-color: #ecfdf5;
+    color: #065f46;
+  }
+
+  .sensor-card {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .connection-status {
+    transition: all 0.3s ease-in-out;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,242 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Header -->
+  <div
+    class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8"
+  >
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">
+        IoT Environmental Monitoring
+      </h1>
+      <p class="text-gray-600">
+        Real-time environmental data from your field sensors
+      </p>
+    </div>
+    <div class="mt-4 sm:mt-0 flex items-center space-x-4">
+      <div
+        class="flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium connection-status {% if is_online %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}"
+      >
+        {% if is_online %}
+        <i data-lucide="wifi" class="h-4 w-4"></i>
+        <span>Online</span>
+        {% else %}
+        <i data-lucide="wifi-off" class="h-4 w-4"></i>
+        <span>Offline</span>
+        {% endif %}
+      </div>
+      <div class="flex items-center space-x-2 text-sm text-gray-600">
+        <i data-lucide="map-pin" class="h-4 w-4"></i>
+        <span>{{ device.location }}</span>
+      </div>
+      <div class="flex items-center space-x-2 text-sm text-gray-500">
+        <i data-lucide="clock" class="h-4 w-4"></i>
+        <span class="last-updated"
+          >Last updated: {{ current_data.timestamp|date:"H:i:s" }}</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Current Readings -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Temperature Card -->
+    <div
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sensor-card"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center">
+          <div class="p-2 bg-red-100 rounded-lg">
+            <i data-lucide="thermometer" class="h-6 w-6 text-red-600"></i>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-gray-900">Temperature</h3>
+            <p class="text-2xl font-bold text-gray-900 temperature-value">
+              {{ current_data.temperature|floatformat:1 }}°C
+            </p>
+          </div>
+        </div>
+        <span
+          class="px-2 py-1 rounded-full text-xs font-medium status-{{ current_data.get_temperature_status }} temperature-status"
+        >
+          {% if current_data.get_temperature_status == 'optimal' %}Optimal {%
+          elif current_data.get_temperature_status == 'warning' %}Warning {%
+          else %}Critical{% endif %}
+        </span>
+      </div>
+      <p class="text-xs text-gray-600 temperature-recommendation">
+        {{ current_data.get_temperature_recommendation }}
+      </p>
+    </div>
+
+    <!-- Humidity Card -->
+    <div
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sensor-card"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center">
+          <div class="p-2 bg-blue-100 rounded-lg">
+            <i data-lucide="droplets" class="h-6 w-6 text-blue-600"></i>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-gray-900">Humidity</h3>
+            <p class="text-2xl font-bold text-gray-900 humidity-value">
+              {{ current_data.humidity|floatformat:1 }}%
+            </p>
+          </div>
+        </div>
+        <span
+          class="px-2 py-1 rounded-full text-xs font-medium status-{{ current_data.get_humidity_status }} humidity-status"
+        >
+          {% if current_data.get_humidity_status == 'optimal' %}Optimal {% elif
+          current_data.get_humidity_status == 'warning' %}Warning {% else
+          %}Critical{% endif %}
+        </span>
+      </div>
+      <p class="text-xs text-gray-600 humidity-recommendation">
+        {{ current_data.get_humidity_recommendation }}
+      </p>
+    </div>
+
+    <!-- Soil Moisture Card -->
+    <div
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sensor-card"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center">
+          <div class="p-2 bg-green-100 rounded-lg">
+            <i data-lucide="activity" class="h-6 w-6 text-green-600"></i>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-gray-900">Soil Moisture</h3>
+            <p class="text-2xl font-bold text-gray-900 soil-moisture-value">
+              {{ current_data.soil_moisture|floatformat:1 }}%
+            </p>
+          </div>
+        </div>
+        <span
+          class="px-2 py-1 rounded-full text-xs font-medium status-{{ current_data.get_soil_moisture_status }} soil-moisture-status"
+        >
+          {% if current_data.get_soil_moisture_status == 'optimal' %}Optimal {%
+          elif current_data.get_soil_moisture_status == 'warning' %}Warning {%
+          else %}Critical{% endif %}
+        </span>
+      </div>
+      <p class="text-xs text-gray-600 soil-moisture-recommendation">
+        {{ current_data.get_soil_moisture_recommendation }}
+      </p>
+    </div>
+
+    <!-- Light Intensity Card -->
+    <div
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sensor-card"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center">
+          <div class="p-2 bg-yellow-100 rounded-lg">
+            <i data-lucide="sun" class="h-6 w-6 text-yellow-600"></i>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-gray-900">Light Intensity</h3>
+            <p class="text-2xl font-bold text-gray-900 light-intensity-value">
+              {{ current_data.light_intensity|floatformat:0 }} lux
+            </p>
+          </div>
+        </div>
+        <span
+          class="px-2 py-1 rounded-full text-xs font-medium text-blue-600 bg-blue-100"
+        >
+          {% if current_data.light_intensity > 500 %}Good{% else %}Low{% endif %}
+        </span>
+      </div>
+      <p class="text-xs text-gray-600 light-intensity-recommendation">
+        {{ current_data.get_light_intensity_recommendation }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Time Range Selector -->
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-xl font-semibold text-gray-900">Historical Data</h2>
+    <div class="flex space-x-2">
+      <button
+        class="time-range-btn px-4 py-2 text-sm font-medium rounded-md transition-colors {% if time_range == '24h' %}bg-green-600 text-white{% else %}bg-white text-gray-700 border border-gray-300 hover:bg-gray-50{% endif %}"
+        data-range="24h"
+      >
+        24 Hours
+      </button>
+      <button
+        class="time-range-btn px-4 py-2 text-sm font-medium rounded-md transition-colors {% if time_range == '7d' %}bg-green-600 text-white{% else %}bg-white text-gray-700 border border-gray-300 hover:bg-gray-50{% endif %}"
+        data-range="7d"
+      >
+        7 Days
+      </button>
+      <button
+        class="time-range-btn px-4 py-2 text-sm font-medium rounded-md transition-colors {% if time_range == '30d' %}bg-green-600 text-white{% else %}bg-white text-gray-700 border border-gray-300 hover:bg-gray-50{% endif %}"
+        data-range="30d"
+      >
+        30 Days
+      </button>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- Temperature & Humidity Chart -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">
+        Temperature & Humidity
+      </h3>
+      <div class="relative h-80">
+        <canvas id="tempHumidityChart" width="400" height="300"></canvas>
+      </div>
+    </div>
+
+    <!-- Soil Moisture Chart -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Soil Moisture</h3>
+      <div class="relative h-80">
+        <canvas id="soilMoistureChart" width="400" height="300"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Light Intensity Chart -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Light Intensity</h3>
+    <div class="relative h-64">
+      <canvas id="lightIntensityChart" width="400" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- Environmental Alerts -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+      Environmental Alerts
+    </h3>
+    <div class="space-y-3">
+      {% for alert in alerts %}
+      <div class="border-l-4 p-4 rounded-r-lg alert-{{ alert.color }}">
+        <div class="flex items-center">
+          <i data-lucide="{{ alert.icon }}" class="h-5 w-5 mr-3"></i>
+          <div>
+            <h4 class="font-medium">{{ alert.title }}</h4>
+            <p class="text-sm">{{ alert.message }}</p>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="text-center py-8">
+        <i
+          data-lucide="check-circle"
+          class="h-8 w-8 mx-auto text-gray-400 mb-2"
+        ></i>
+        <p class="text-gray-500 text-sm">No active alerts at this time.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Hidden div to store historical data for JavaScript -->
+<script type="application/json" id="iot-data">
+  {{ historical_data|safe }}
+</script>

@@ -1,0 +1,67 @@
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Current Conditions -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Current Conditions</h2>
+        {% if latest_weather %}
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <i data-lucide="thermometer" class="h-6 w-6 text-blue-600 mr-3"></i>
+                    <div>
+                        <p class="text-sm text-gray-600">Temperature</p>
+                        <p class="text-xl font-bold text-gray-900">{{ latest_weather.temperature }}°C</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <i data-lucide="droplets" class="h-6 w-6 text-blue-600 mr-3"></i>
+                    <div>
+                        <p class="text-sm text-gray-600">Humidity</p>
+                        <p class="text-xl font-bold text-gray-900">{{ latest_weather.humidity }}%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <i data-lucide="wind" class="h-6 w-6 text-blue-600 mr-3"></i>
+                    <div>
+                        <p class="text-sm text-gray-600">Wind Speed</p>
+                        <p class="text-xl font-bold text-gray-900">{{ latest_weather.wind_speed }} km/h</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <i data-lucide="umbrella" class="h-6 w-6 text-blue-600 mr-3"></i>
+                    <div>
+                        <p class="text-sm text-gray-600">Rainfall</p>
+                        <p class="text-xl font-bold text-gray-900">{{ latest_weather.rainfall }} mm</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-gray-500">No weather data available.</p>
+        {% endif %}
+    </div>
+
+    <!-- Weather Recommendations -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Weather-Based Recommendations</h2>
+        <div class="space-y-4">
+            <div class="border-l-4 border-l-yellow-500 bg-yellow-50 p-4 rounded-r-lg">
+                <h3 class="font-medium text-yellow-800">High Humidity Alert</h3>
+                <p class="text-sm text-yellow-700 mt-1">
+                    High humidity levels favor fungal disease development. Consider improving air circulation.
+                </p>
+            </div>
+            <div class="border-l-4 border-l-green-500 bg-green-50 p-4 rounded-r-lg">
+                <h3 class="font-medium text-green-800">Optimal Growing Conditions</h3>
+                <p class="text-sm text-green-700 mt-1">
+                    Temperature and light conditions are excellent for crop growth.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

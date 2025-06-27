@@ -1,0 +1,56 @@
+<div class="space-y-4">
+    {% for notification in notifications %}
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 border-l-4 {% if notification.type == 'ALERT' %}border-l-red-500{% else %}border-l-green-500{% endif %} p-6" data-notification-card-id="{{ notification.pk }}">
+        <div class="flex items-start">
+            <div class="flex-shrink-0 mr-4">
+                {% if notification.type == 'ALERT' %}
+                    <i data-lucide="alert-triangle" class="h-5 w-5 text-red-500"></i>
+                {% else %}
+                    <i data-lucide="check-circle" class="h-5 w-5 text-green-500"></i>
+                {% endif %}
+            </div>
+            <div class="flex-grow">
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">
+                    {{ notification.title }}
+                    {% if not notification.is_read %}
+                    <span class="ml-2 inline-block w-2 h-2 bg-blue-600 rounded-full" data-unread-indicator-id="{{ notification.pk }}"></span>
+                    {% endif %}
+                </h3>
+                <p class="text-gray-700 mb-3">{{ notification.message }}</p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i data-lucide="clock" class="h-4 w-4 mr-1"></i>
+                        {{ notification.created_at|timesince }} ago
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button data-url="{% url 'recommendations:detail_partial' notification.pk %}" class="view-details-button text-sm text-blue-600 hover:text-blue-800 font-medium">View Details</button>
+                        {% if not notification.is_read %}
+                        <button data-url="{% url 'recommendations:mark_as_read' notification.pk %}" class="mark-as-read-button text-sm text-gray-600 hover:text-gray-800">Mark as Read</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+            {% if active_tab == 'alerts' %}
+                <i data-lucide="alert-triangle" class="h-12 w-12 text-gray-400"></i>
+            {% else %}
+                <i data-lucide="check-circle" class="h-12 w-12 text-gray-400"></i>
+            {% endif %}
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">
+            No {% if active_tab == 'alerts' %}alerts{% else %}recommendations{% endif %} at the moment
+        </h3>
+        <p class="text-gray-500">
+            {% if active_tab == 'alerts' %}
+            You'll be notified here when disease risks are detected in your area.
+            {% else %}
+            Check back later for personalized crop management recommendations.
+            {% endif %}
+        </p>
+    </div>
+    {% endfor %}
+</div>

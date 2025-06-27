@@ -1,0 +1,60 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {% csrf_token %}
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Recommendations & Alerts</h1>
+        <p class="text-gray-600">Stay informed with AI-powered insights and regional crop health alerts</p>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="border-b border-gray-200 mb-6">
+        <nav id="notification-tabs" class="-mb-px flex space-x-8">
+            <button data-tab="alerts" class="tab-button py-2 px-1 border-b-2 font-medium text-sm flex items-center {% if active_tab == 'alerts' %}border-red-500 text-red-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %}">
+                <i data-lucide="alert-triangle" class="h-4 w-4 mr-2"></i>
+                Disease Alerts
+            </button>
+            <button data-tab="recommendations" class="tab-button py-2 px-1 border-b-2 font-medium text-sm flex items-center {% if active_tab == 'recommendations' %}border-green-500 text-green-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %}">
+                <i data-lucide="check-circle" class="h-4 w-4 mr-2"></i>
+                Recommendations
+            </button>
+            <button data-tab="weather" class="tab-button py-2 px-1 border-b-2 font-medium text-sm flex items-center {% if active_tab == 'weather' %}border-blue-500 text-blue-600{% else %}border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %}">
+                <i data-lucide="thermometer" class="h-4 w-4 mr-2"></i>
+                Weather Insights
+            </button>
+        </nav>
+    </div>
+
+    <!-- Tab Content Area -->
+    <div id="tab-content">
+        {% if active_tab == 'weather' %}
+            {% include 'recommendations/_weather_partial.html' %}
+        {% else %}
+            {% include 'recommendations/_notifications_partial.html' %}
+        {% endif %}
+    </div>
+
+    <!-- Regional Disease Map -->
+    <div class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold text-gray-900">Regional Disease Activity</h2>
+            <div class="flex items-center text-sm text-gray-600">
+                <i data-lucide="map-pin" class="h-4 w-4 mr-1"></i>
+                Your Region
+            </div>
+        </div>
+        <div class="bg-gray-100 rounded-lg h-64 flex items-center justify-center">
+            <div class="text-center">
+                <i data-lucide="map-pin" class="h-12 w-12 text-gray-400 mx-auto mb-2"></i>
+                <p class="text-gray-500">Interactive disease map coming soon</p>
+                <p class="text-sm text-gray-400">View disease outbreaks and risk areas in your region</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal container -->
+    <div id="notification-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div id="modal-content-container" class="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl mx-4">
+            <!-- AJAX content will be injected here -->
+        </div>
+    </div>
+</div>
