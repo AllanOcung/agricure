@@ -3,17 +3,18 @@ from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetConfirmView
-from django.core.mail import BadHeaderError, EmailMultiAlternatives
+from django.core.mail import BadHeaderError
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User as AuthUser
-from django.template import loader
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
-from django.contrib.auth.tokens import default_token_generator
 from .forms import RegistrationForm
 from .models import User
 from .email_forms import EmailTestForm
+
+
+def landing_view(request):
+    """Landing page for AgriCure system."""
+    return render(request, 'landing.html')
 
 def register_view(request):
     if request.method == 'POST':
@@ -45,27 +46,9 @@ def logout_view(request):
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'users/password_reset.html'
-    email_template_name = 'users/password_reset_email.txt'
-    html_email_template_name = 'users/password_reset_email.html'
+    email_template_name = 'users/password_reset_email.html'
     subject_template_name = 'users/password_reset_subject.txt'
     success_url = reverse_lazy('users:password_reset_done')
-    
-    def send_mail(self, subject_template_name, email_template_name,
-                  context, from_email, to_email, html_email_template_name=None):
-        """
-        Send a django.core.mail.EmailMultiAlternatives to `to_email`.
-        """
-        subject = loader.render_to_string(subject_template_name, context)
-        # Email subject *must not* contain newlines
-        subject = ''.join(subject.splitlines())
-        body = loader.render_to_string(email_template_name, context)
-
-        email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
-        if html_email_template_name is not None:
-            html_email = loader.render_to_string(html_email_template_name, context)
-            email_message.attach_alternative(html_email, 'text/html')
-
-        email_message.send()
     
     def form_valid(self, form):
         try:

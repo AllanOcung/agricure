@@ -109,30 +109,10 @@
 
             <button
               type="submit"
-              id="submit-button"
-              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             >
-              <span id="button-text">
-                <i data-lucide="send" class="h-4 w-4 mr-2"></i>
-                Send Test Email
-              </span>
-              <span id="button-loader" class="hidden">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="animate-spin h-5 w-5 mr-2"
-                >
-                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                </svg>
-                Sending email...
-              </span>
+              <i data-lucide="send" class="h-4 w-4 mr-2"></i>
+              Send Test Email
             </button>
           </form>
 
@@ -185,22 +165,6 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         lucide.createIcons();
-
-        const emailTestForm = document.querySelector("form");
-        const submitButton = document.getElementById("submit-button");
-        const buttonText = document.getElementById("button-text");
-        const buttonLoader = document.getElementById("button-loader");
-
-        if (emailTestForm) {
-          emailTestForm.addEventListener("submit", function () {
-            if (emailTestForm.checkValidity()) {
-              submitButton.setAttribute("disabled", "true");
-              buttonText.classList.add("hidden");
-              buttonLoader.classList.remove("hidden");
-              buttonLoader.classList.add("flex", "items-center");
-            }
-          });
-        }
       });
     </script>
   </body>

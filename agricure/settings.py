@@ -30,12 +30,13 @@ SECRET_KEY = 'django-insecure-8*lws7_jz5j7g1@v#=*9ncpqs!tvr)#b1b#euuhgxpmrn)z)k*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
+ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'apps.users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'apps.users',
+    
     'apps.diagnosis',
     'apps.recommendations',
     'apps.history',
@@ -55,7 +56,7 @@ AUTH_USER_MODEL = 'users.User'
 
 # Add these lines for login/logout redirects
 LOGIN_URL = 'users:login'
-LOGIN_REDIRECT_URL = 'diagnosis:dashboard'
+LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'users:login'
 
 # Media files (user-uploaded content)
@@ -155,14 +156,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Add this to tell Django where to find static files during development
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Static files will be collected here for production (not needed in development)
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Media files
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

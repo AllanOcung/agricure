@@ -1,0 +1,94 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Admin Dashboard') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 10px;">
+            <path d="M12 2L4 5V11.09C4 16.14 7.41 20.85 12 22C16.59 20.85 20 16.14 20 11.09V5L12 2Z" fill="#4CAF50"/>
+            <path d="M12 2V22C16.59 20.85 20 16.14 20 11.09V5L12 2Z" fill="#81C784"/>
+        </svg>
+        <span>{{ site_header|default:_('Admin Dashboard') }}</span>
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <style>
+        /* Modern Header Styles */
+        #header {
+            background: #c4c5c4;
+            color: rgb(26, 25, 25);
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        #branding h1 {
+            margin: 0;
+            padding: 0;
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        #branding h1 a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* User tools styling */
+        #user-tools {
+            font-size: 0.9rem;
+            font-weight: 400;
+            padding: 0;
+            margin: 0;
+        }
+        
+        #user-tools a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        
+        #user-tools a:hover {
+            opacity: 0.8;
+        }
+        
+        #user-tools a:last-child {
+            margin-left: 15px;
+            padding-left: 15px;
+            border-left: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        /* Remove "View site" link specifically */
+        #user-tools a:first-child {
+            display: none;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #header {
+                padding: 0 15px;
+            }
+            
+            #branding h1 span {
+                display: none;
+            }
+            
+            #user-tools {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+{% endblock %}
