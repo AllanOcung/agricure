@@ -36,7 +36,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'apps.users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    
+    'apps.accounts',
     'apps.diagnosis',
     'apps.recommendations',
     'apps.history',
@@ -52,12 +51,19 @@ INSTALLED_APPS = [
 ]
 
 # Add this line to specify your custom user model
-AUTH_USER_MODEL = 'users.User'
+# AUTH_USER_MODEL = 'users.User'
 
-# Add these lines for login/logout redirects
-LOGIN_URL = 'users:login'
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'users:login'
+# Login/Logout URLs
+# LOGIN_URL = '/accounts/login/'
+# LOGIN_REDIRECT_URL = '/accounts/login-redirect/'
+# LOGOUT_REDIRECT_URL = '/'
+
+
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'apps.accounts.backends.EmailBackend',  # Custom email authentication
+    'django.contrib.auth.backends.ModelBackend',  # Default username authentication (fallback)
+]
 
 # Media files (user-uploaded content)
 MEDIA_URL = '/media/'

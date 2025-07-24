@@ -4,698 +4,167 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CropGuard AI | Smart Plant Disease Diagnosis</title>
-    <link rel="stylesheet" href="{% static 'css/custom_admin.css' %}" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <title>Agricure - AI-Powered Crop Diagnosis</title>
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/herosection.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/howitworks.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/benefits.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/technology.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/animations.css' %}" />
   </head>
   <body>
-    <div class="min-h-screen bg-white">
-      <!-- Navigation -->
-      <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between items-center h-16">
-            <div class="flex items-center">
-              <!-- <i data-lucide="leaf" class="h-8 w-8 text-emerald-600 mr-2"></i> -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="48"
-                height="48"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="text-green-600"
-              >
-                <path d="M7 20h10" />
-                <path d="M10 20c5.5-2.5.8-6.4 3-10" />
-                <path
-                  d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.7-2.3-2.2-2.8-4.2 2.8-.5 4.4 0 5.3.6z"
-                />
-                <path
-                  d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-3.6-2.8.4-4.4.4-4.9.4z"
-                />
-              </svg>
-              <span class="text-xl font-bold text-gray-900">Agricure</span>
-            </div>
+    <!-- Navigation -->
+    {% include 'navbar.html' %}
 
-            <!-- Desktop Menu -->
-            <div class="hidden md:block">
-              <div class="ml-10 flex items-baseline space-x-8">
-                <a
-                  href="#features"
-                  class="text-gray-700 hover:text-emerald-600 px-3 py-2 text-sm font-medium transition-colors"
-                  >Features</a
-                >
-                <a
-                  href="#how-it-works"
-                  class="text-gray-700 hover:text-emerald-600 px-3 py-2 text-sm font-medium transition-colors"
-                  >How It Works</a
-                >
-                <a
-                  href="#benefits"
-                  class="text-gray-700 hover:text-emerald-600 px-3 py-2 text-sm font-medium transition-colors"
-                  >Benefits</a
-                >
-                <a
-                  href="{% url 'users:register' %}"
-                  class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
-                >
-                  Get Started
-                </a>
-              </div>
-            </div>
+    <!-- Hero Section -->
+    {% include 'herosection.html' %}
 
-            <!-- Mobile Menu Button -->
-            <div class="md:hidden">
-              <button
-                onclick="toggleMobileMenu()"
-                class="text-gray-700 hover:text-emerald-600 p-2"
-              >
-                <i data-lucide="menu" class="h-6 w-6 menu-open"></i>
-                <i data-lucide="x" class="h-6 w-6 menu-close hidden"></i>
-              </button>
-            </div>
-          </div>
-        </div>
+    <!-- Challenges Section -->
+    {% include 'challenges.html' %}
 
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden bg-white border-t hidden">
-          <div class="px-2 pt-2 pb-3 space-y-1">
-            <a
-              href="#features"
-              class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600"
-              >Features</a
-            >
-            <a
-              href="#how-it-works"
-              class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600"
-              >How It Works</a
-            >
-            <a
-              href="#benefits"
-              class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-emerald-600"
-              >Benefits</a
-            >
-            <a
-              href="{% url 'users:register' %}"
-              class="block w-full text-left bg-emerald-600 text-white px-3 py-2 rounded-lg text-base font-medium hover:bg-emerald-700 transition-colors"
-            >
-              Get Started
-            </a>
-          </div>
-        </div>
-      </nav>
+    <!-- Features Section -->
+    {% include 'features.html' %}
 
-      <!-- Hero Section -->
-      <section
-        class="bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 py-20"
-      >
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center">
-            <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-              Protect Your Crops with
-              <span class="text-emerald-600 block">AI-Powered Diagnosis</span>
-            </h1>
-            <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Upload a photo, get instant disease identification, and receive
-              personalized treatment recommendations. Reduce crop losses by up
-              to 40% with our advanced agricultural AI technology.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="{% url 'diagnosis:dashboard' %}"
-                class="bg-emerald-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center group"
-              >
-                Start Diagnosis
-                <i
-                  data-lucide="arrow-right"
-                  class="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform"
-                ></i>
-              </a>
-              <button
-                class="border border-emerald-600 text-emerald-600 px-8 py-4 rounded-lg text-lg font-medium hover:bg-emerald-50 transition-colors"
-              >
-                Watch Demo
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+    <!-- How it Works Section -->
+    {% include 'howitworks.html' %}
 
-      <!-- Problem Statement -->
-      <section class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              The Challenge Farmers Face
-            </h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-              Crop diseases cause billions in losses annually. Traditional
-              diagnosis methods are slow, expensive, and often unavailable when
-              farmers need them most.
-            </p>
-          </div>
+    <!-- Benefits Section -->
+    {% include 'benefits.html' %}
 
-          <div class="grid md:grid-cols-3 gap-8">
-            <div class="text-center p-8 bg-red-50 rounded-xl">
-              <div class="text-4xl font-bold text-red-600 mb-4">30%</div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-2">
-                Annual Crop Loss
-              </h3>
-              <p class="text-gray-600">
-                Global crop losses due to diseases and pests
-              </p>
-            </div>
-            <div class="text-center p-8 bg-orange-50 rounded-xl">
-              <div class="text-4xl font-bold text-orange-600 mb-4">7+ Days</div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-2">
-                Diagnosis Delay
-              </h3>
-              <p class="text-gray-600">Average time to get expert diagnosis</p>
-            </div>
-            <div class="text-center p-8 bg-yellow-50 rounded-xl">
-              <div class="text-4xl font-bold text-yellow-600 mb-4">$220B</div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-2">
-                Economic Impact
-              </h3>
-              <p class="text-gray-600">
-                Annual global losses from crop diseases
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+    <!-- Technology Section -->
+    {% include 'technology.html' %}
 
-      <!-- Features Section -->
-      <section id="features" class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Advanced Features for Modern Agriculture
-            </h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our comprehensive platform combines AI technology, IoT
-              integration, and user-friendly design to deliver powerful
-              agricultural solutions.
-            </p>
-          </div>
+    <!-- CTA Section -->
+    {% include 'cta.html' %}
 
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div
-              class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow group"
-            >
-              <div
-                class="mb-4 p-3 bg-emerald-50 rounded-lg w-fit group-hover:bg-emerald-100 transition-colors"
-              >
-                <i data-lucide="camera" class="w-8 h-8 text-emerald-600"></i>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                AI-Powered Diagnosis
-              </h3>
-              <p class="text-gray-600">
-                Upload crop images and get instant disease identification with
-                95% accuracy using advanced machine learning.
-              </p>
-            </div>
-            <div
-              class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow group"
-            >
-              <div
-                class="mb-4 p-3 bg-emerald-50 rounded-lg w-fit group-hover:bg-emerald-100 transition-colors"
-              >
-                <i data-lucide="brain" class="w-8 h-8 text-emerald-600"></i>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                Smart Recommendations
-              </h3>
-              <p class="text-gray-600">
-                Receive personalized treatment plans and preventive measures
-                based on environmental data and disease patterns.
-              </p>
-            </div>
-            <div
-              class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow group"
-            >
-              <div
-                class="mb-4 p-3 bg-emerald-50 rounded-lg w-fit group-hover:bg-emerald-100 transition-colors"
-              >
-                <i
-                  data-lucide="trending-up"
-                  class="w-8 h-8 text-emerald-600"
-                ></i>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                Historical Analytics
-              </h3>
-              <p class="text-gray-600">
-                Track disease patterns, treatment outcomes, and crop health
-                trends over time with detailed visualizations.
-              </p>
-            </div>
-            <div
-              class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow group"
-            >
-              <div
-                class="mb-4 p-3 bg-emerald-50 rounded-lg w-fit group-hover:bg-emerald-100 transition-colors"
-              >
-                <i data-lucide="wifi" class="w-8 h-8 text-emerald-600"></i>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                IoT Integration
-              </h3>
-              <p class="text-gray-600">
-                Connect environmental sensors for real-time monitoring of soil
-                moisture, temperature, and humidity.
-              </p>
-            </div>
-            <div
-              class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow group"
-            >
-              <div
-                class="mb-4 p-3 bg-emerald-50 rounded-lg w-fit group-hover:bg-emerald-100 transition-colors"
-              >
-                <i data-lucide="globe" class="w-8 h-8 text-emerald-600"></i>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                Multilingual Support
-              </h3>
-              <p class="text-gray-600">
-                Available in multiple languages with intuitive interface
-                designed for farmers with varying digital literacy.
-              </p>
-            </div>
-            <div
-              class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow group"
-            >
-              <div
-                class="mb-4 p-3 bg-emerald-50 rounded-lg w-fit group-hover:bg-emerald-100 transition-colors"
-              >
-                <i
-                  data-lucide="smartphone"
-                  class="w-8 h-8 text-emerald-600"
-                ></i>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                Mobile & Offline
-              </h3>
-              <p class="text-gray-600">
-                Full mobile compatibility with offline mode for accessing
-                diagnosis history without internet connectivity.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+    <!-- Footer -->
+    {% include 'footer.html' %}
 
-      <!-- How It Works -->
-      <section id="how-it-works" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              How It Works
-            </h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-              Get accurate crop disease diagnosis in three simple steps, all
-              within 10 seconds.
-            </p>
-          </div>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-          <div class="grid md:grid-cols-3 gap-8">
-            <div class="text-center relative">
-              <div class="mb-6">
-                <div
-                  class="w-16 h-16 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4"
-                >
-                  <i data-lucide="upload" class="w-6 h-6 text-white"></i>
-                </div>
-                <div class="text-2xl font-bold text-emerald-600 mb-2">
-                  Step 1
-                </div>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                Upload Image
-              </h3>
-              <p class="text-gray-600">
-                Take a photo of your affected crop using your smartphone or
-                upload from your device.
-              </p>
-
-              <div
-                class="hidden md:block absolute top-8 left-full w-8 h-0.5 bg-emerald-200 transform -translate-x-4"
-              ></div>
-            </div>
-            <div class="text-center relative">
-              <div class="mb-6">
-                <div
-                  class="w-16 h-16 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4"
-                >
-                  <i data-lucide="eye" class="w-6 h-6 text-white"></i>
-                </div>
-                <div class="text-2xl font-bold text-emerald-600 mb-2">
-                  Step 2
-                </div>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                AI Analysis
-              </h3>
-              <p class="text-gray-600">
-                Our advanced AI model analyzes the image and identifies diseases
-                with high accuracy.
-              </p>
-
-              <div
-                class="hidden md:block absolute top-8 left-full w-8 h-0.5 bg-emerald-200 transform -translate-x-4"
-              ></div>
-            </div>
-            <div class="text-center relative">
-              <div class="mb-6">
-                <div
-                  class="w-16 h-16 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4"
-                >
-                  <i
-                    data-lucide="message-square"
-                    class="w-6 h-6 text-white"
-                  ></i>
-                </div>
-                <div class="text-2xl font-bold text-emerald-600 mb-2">
-                  Step 3
-                </div>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                Get Recommendations
-              </h3>
-              <p class="text-gray-600">
-                Receive detailed diagnosis results and personalized treatment
-                recommendations.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Benefits Section -->
-      <section
-        id="benefits"
-        class="py-20 bg-gradient-to-br from-emerald-50 to-teal-50"
-      >
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Benefits for Every User
-            </h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-              Whether you're a farmer, agronomist, or extension worker, our
-              platform provides tailored solutions for your specific needs.
-            </p>
-          </div>
-
-          <div class="grid md:grid-cols-3 gap-8">
-            <div
-              class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div class="mb-4 p-3 bg-emerald-50 rounded-lg w-fit">
-                <i data-lucide="users" class="w-8 h-8 text-emerald-600"></i>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                For Farmers
-              </h3>
-              <p class="text-gray-600 mb-4">
-                Reduce crop losses by up to 40% with early disease detection and
-                precise treatment recommendations.
-              </p>
-              <div class="text-emerald-600 font-semibold">
-                40% Reduction in Crop Loss
-              </div>
-            </div>
-            <div
-              class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div class="mb-4 p-3 bg-emerald-50 rounded-lg w-fit">
-                <i
-                  data-lucide="bar-chart-3"
-                  class="w-8 h-8 text-emerald-600"
-                ></i>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                For Agronomists
-              </h3>
-              <p class="text-gray-600 mb-4">
-                Access comprehensive analytics and historical data to provide
-                better advisory services to multiple farmers.
-              </p>
-              <div class="text-emerald-600 font-semibold">
-                10x More Efficient Advisory
-              </div>
-            </div>
-            <div
-              class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div class="mb-4 p-3 bg-emerald-50 rounded-lg w-fit">
-                <i data-lucide="map-pin" class="w-8 h-8 text-emerald-600"></i>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                For Extension Workers
-              </h3>
-              <p class="text-gray-600 mb-4">
-                Monitor regional disease patterns and provide proactive
-                recommendations to farming communities.
-              </p>
-              <div class="text-emerald-600 font-semibold">
-                Regional Disease Monitoring
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Technology Section -->
-      <section class="py-20 bg-gray-900 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold mb-6">
-              Cutting-Edge Technology
-            </h2>
-            <p class="text-xl text-gray-300 max-w-3xl mx-auto">
-              Built on advanced AI/ML models and designed for reliability,
-              security, and scalability.
-            </p>
-          </div>
-
-          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div class="text-center p-6 bg-gray-800 rounded-xl">
-              <i
-                data-lucide="shield"
-                class="w-12 h-12 text-emerald-400 mx-auto mb-4"
-              ></i>
-              <h3 class="text-lg font-semibold mb-2">99.5% Uptime</h3>
-              <p class="text-gray-400">Reliable system availability</p>
-            </div>
-            <div class="text-center p-6 bg-gray-800 rounded-xl">
-              <i
-                data-lucide="clock"
-                class="w-12 h-12 text-emerald-400 mx-auto mb-4"
-              ></i>
-              <h3 class="text-lg font-semibold mb-2">10 Second Response</h3>
-              <p class="text-gray-400">Fast diagnosis processing</p>
-            </div>
-            <div class="text-center p-6 bg-gray-800 rounded-xl">
-              <i
-                data-lucide="award"
-                class="w-12 h-12 text-emerald-400 mx-auto mb-4"
-              ></i>
-              <h3 class="text-lg font-semibold mb-2">95% Accuracy</h3>
-              <p class="text-gray-400">Precise disease identification</p>
-            </div>
-            <div class="text-center p-6 bg-gray-800 rounded-xl">
-              <i
-                data-lucide="users"
-                class="w-12 h-12 text-emerald-400 mx-auto mb-4"
-              ></i>
-              <h3 class="text-lg font-semibold mb-2">1000+ Users</h3>
-              <p class="text-gray-400">Concurrent user support</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CTA Section -->
-      <section class="py-20 bg-emerald-600">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
-            Ready to Transform Your Agriculture?
-          </h2>
-          <p class="text-xl text-emerald-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of farmers already using CropGuard AI to protect
-            their crops and increase their yields.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="{% url 'users:register' %}"
-              class="bg-white text-emerald-600 px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-50 transition-colors"
-            >
-              Start Free Trial
-            </a>
-            <button
-              class="border border-white text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-emerald-700 transition-colors"
-            >
-              Schedule Demo
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Footer -->
-      <footer class="bg-gray-900 text-white py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="grid md:grid-cols-4 gap-8">
-            <div class="col-span-2">
-              <div class="flex items-center mb-4">
-                <i data-lucide="leaf" class="h-8 w-8 text-emerald-400 mr-2"></i>
-                <span class="text-xl font-bold">CropGuard AI</span>
-              </div>
-              <p class="text-gray-400 mb-4">
-                Empowering farmers with AI-powered crop disease diagnosis and
-                management solutions.
-              </p>
-              <div class="flex space-x-4">
-                <i
-                  data-lucide="check-circle"
-                  class="w-5 h-5 text-emerald-400"
-                ></i>
-                <span class="text-sm text-gray-400">HTTPS/SSL Secured</span>
-              </div>
-            </div>
-            <div>
-              <h3 class="text-lg font-semibold mb-4">Platform</h3>
-              <ul class="space-y-2 text-gray-400">
-                <li>
-                  <a href="#features" class="hover:text-white transition-colors"
-                    >Features</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="{% url 'users:register' %}"
-                    class="hover:text-white transition-colors"
-                    >Pricing</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="hover:text-white transition-colors">API</a>
-                </li>
-                <li>
-                  <a href="#" class="hover:text-white transition-colors"
-                    >Mobile App</a
-                  >
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 class="text-lg font-semibold mb-4">Support</h3>
-              <ul class="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" class="hover:text-white transition-colors"
-                    >Help Center</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="hover:text-white transition-colors"
-                    >Contact</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="hover:text-white transition-colors"
-                    >Privacy</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="hover:text-white transition-colors"
-                    >Terms</a
-                  >
-                </li>
-              </ul>
-            </div>
-          </div>
-          <!-- <div
-            class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400"
-          >
-            <p>&copy; 2025 Agricure. All rights reserved.</p>
-          </div> -->
-          <div
-            class=" border-t border-gray-800 mt-8 pt-8 text-center"
-          >
-            <div
-              class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
-            >
-              <div class="text-center md:text-left">
-                <p class="text-sm text-gray-600">
-                  &copy; 2025 Agricure. All rights reserved. Powered by AI for
-                  sustainable agriculture.
-                </p>
-              </div>
-              <div class="flex space-x-6 text-gray-500">
-                <a
-                  href="#"
-                  class="text-sm hover:text-gray-400 transition-colors"
-                  >Privacy Policy</a
-                >
-                <a
-                  href="#"
-                  class="text-sm hover:text-gray-400 transition-colors"
-                  >Terms of Service</a
-                >
-                <a
-                  href="#"
-                  class="text-sm hover:text-gray-400 transition-colors"
-                  >Support</a
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-
+    <!-- Animation JavaScript -->
     <script>
-      // Initialize Lucide icons
-      lucide.createIcons();
+      // Intersection Observer for scroll animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      };
 
-      // Mobile menu toggle
-      function toggleMobileMenu() {
-        const mobileMenu = document.getElementById("mobile-menu");
-        const menuOpen = document.querySelector(".menu-open");
-        const menuClose = document.querySelector(".menu-close");
-
-        mobileMenu.classList.toggle("hidden");
-        menuOpen.classList.toggle("hidden");
-        menuClose.classList.toggle("hidden");
-      }
-
-      // Smooth scrolling for anchor links
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener("click", function (e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute("href"));
-          if (target) {
-            target.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            entry.target.classList.add("animated");
           }
         });
+      }, observerOptions);
+
+      // Observe all elements with animation classes
+      document.addEventListener("DOMContentLoaded", () => {
+        const animatedElements = document.querySelectorAll(
+          ".animate-on-scroll, .fade-in, .fade-in-up, .fade-in-left, .fade-in-right, .scale-in, .step-card, .card-benefits, .section-header"
+        );
+
+        animatedElements.forEach((el) => observer.observe(el));
+
+        // Navbar scroll effect
+        const navbar = document.querySelector(".navbar");
+        let lastScrollTop = 0;
+
+        window.addEventListener("scroll", () => {
+          const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
+
+          if (scrollTop > 100) {
+            navbar.classList.add("scrolled");
+          } else {
+            navbar.classList.remove("scrolled");
+          }
+
+          lastScrollTop = scrollTop;
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute("href"));
+            if (target) {
+              target.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }
+          });
+        });
+
+        // Add stagger delay to cards and steps
+        const stepCards = document.querySelectorAll(".step-card");
+        stepCards.forEach((card, index) => {
+          card.style.transitionDelay = `${index * 0.2}s`;
+        });
+
+        const benefitCards = document.querySelectorAll(".card-benefits");
+        benefitCards.forEach((card, index) => {
+          card.style.transitionDelay = `${index * 0.2}s`;
+        });
+
+        // Count-up animation for numbers
+        const countUpElements = document.querySelectorAll(".stat-number");
+        const countUp = (element, start, end, duration) => {
+          let startTime = null;
+          const step = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            const current = Math.floor(progress * (end - start) + start);
+            element.textContent = current;
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            }
+          };
+          requestAnimationFrame(step);
+        };
+
+        const numberObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const target = entry.target;
+              const endValue = parseInt(
+                target.getAttribute("data-count") || target.textContent
+              );
+              countUp(target, 0, endValue, 2000);
+              numberObserver.unobserve(target);
+            }
+          });
+        });
+
+        countUpElements.forEach((el) => numberObserver.observe(el));
+      });
+
+      // Add loading state management
+      window.addEventListener("load", () => {
+        document.body.classList.add("loaded");
+      });
+
+      // Parallax effect for hero background
+      window.addEventListener("scroll", () => {
+        const scrolled = window.pageYOffset;
+        const parallax = document.querySelector(".hero-bg");
+        if (parallax) {
+          const speed = scrolled * 0.5;
+          parallax.style.transform = `translateY(${speed}px)`;
+        }
       });
     </script>
   </body>

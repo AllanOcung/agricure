@@ -133,7 +133,7 @@
                   Settings
                 </a>
                 <a
-                  href="{% url 'users:logout' %}"
+                  href="{% url 'accounts:logout' %}"
                   class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600"
                 >
                   <i data-lucide="log-out" class="h-4 w-4 mr-2"></i> Sign Out
@@ -144,7 +144,7 @@
             <!-- Guest Links -->
             <div class="hidden md:flex items-center space-x-2">
               <a
-                href="{% url 'users:login' %}"
+                href="{% url 'accounts:login' %}"
                 class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium"
                 >Sign In</a
               >
