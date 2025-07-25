@@ -1,158 +1,186 @@
 <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8" id="history-container">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Diagnosis History</h1>
+      <p class="text-gray-500 mt-2">
+        Track your crop health diagnoses and analyze trends over time
+      </p>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <!-- Total Diagnoses -->
+    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex items-center gap-4">
+        <div class="p-3 bg-blue-100 rounded-lg">
+          <i data-lucide="file-text" class="h-6 w-6 text-blue-600"></i>
+        </div>
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Diagnosis History</h1>
-            <p class="text-gray-600">Track your crop health diagnoses and analyze trends over time</p>
+          <h3 class="text-2xl font-bold text-gray-900">
+            {{ total_diagnoses }}
+          </h3>
+          <p class="text-sm text-gray-500">Total Diagnoses</p>
         </div>
-        <div class="mt-4 sm:mt-0 flex space-x-3">
-            <button id="view-list-btn" class="px-4 py-2 text-sm font-medium rounded-md transition-colors bg-green-600 text-white">
-                <i data-lucide="leaf" class="h-4 w-4 inline mr-2"></i>
-                List View
+      </div>
+    </div>
+    
+    <!-- Diseases Identified -->
+    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex items-center gap-4">
+        <div class="p-3 bg-red-100 rounded-lg">
+          <i data-lucide="bug" class="h-6 w-6 text-red-600"></i>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold text-gray-900">
+            {{ disease_frequency|length }}
+          </h3>
+          <p class="text-sm text-gray-500">Diseases Identified</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Avg. Confidence -->
+    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex items-center gap-4">
+        <div class="p-3 bg-yellow-100 rounded-lg">
+          <i data-lucide="trending-up" class="h-6 w-6 text-yellow-600"></i>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold text-gray-900">
+            {{ avg_confidence|floatformat:1 }}%
+          </h3>
+          <p class="text-sm text-gray-500">Avg. Confidence</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
+    <div class="p-6">
+      <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div class="relative flex-1 max-w-md">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i data-lucide="search" class="text-gray-400 w-4 h-4"></i>
+          </div>
+          <input
+            type="text"
+            placeholder="Search diseases..."
+            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        <div class="flex gap-3 w-full sm:w-auto">
+          <div class="relative w-full sm:w-40">
+            <button
+              class="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md bg-white text-sm"
+            >
+              <div class="flex items-center">
+                <i data-lucide="filter" class="w-4 h-4 mr-2 text-gray-400"></i>
+                <span>All Severities</span>
+              </div>
+              <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
             </button>
-            <button id="view-analytics-btn" class="px-4 py-2 text-sm font-medium rounded-md transition-colors bg-white text-gray-700 border border-gray-300 hover:bg-gray-50">
-                <i data-lucide="bar-chart-3" class="h-4 w-4 inline mr-2"></i>
-                Analytics
-            </button>
+          </div>
+          <button
+            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm font-medium whitespace-nowrap"
+          >
+            Export PDF
+          </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Diagnoses List -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h2 class="text-lg font-semibold text-gray-900">
+        Recent Diagnoses ({{ diagnoses_page.paginator.count }})
+      </h2>
+    </div>
+    
+    <div class="divide-y divide-gray-200">
+      {% for diagnosis in diagnoses_page %}
+      <div class="p-6 hover:bg-gray-50 transition-colors duration-150">
+        <div class="flex items-start gap-4">
+          <img
+            src="{{ diagnosis.image.url }}"
+            alt="Crop diagnosis"
+            class="w-16 h-16 rounded-lg object-cover border border-gray-200 flex-shrink-0"
+          />
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+              <div class="flex-1">
+                <h3 class="font-semibold text-gray-900 truncate">
+                  {{ diagnosis.disease_name }}
+                </h3>
+                <p class="text-sm text-gray-500">
+                  Affected: {{ diagnosis.affected_plant_part }}
+                </p>
+                <p class="text-sm text-gray-500 mt-1 line-clamp-2">
+                  {{ diagnosis.description|truncatewords:20 }}
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-2 flex-shrink-0">
+                <span
+                  class="px-2 py-1 rounded-full text-xs font-medium {% if diagnosis.severity == 'Low' %}bg-green-100 text-green-800{% elif diagnosis.severity == 'Medium' %}bg-yellow-100 text-yellow-800{% else %}bg-red-100 text-red-800{% endif %}"
+                >
+                  {{ diagnosis.severity }}
+                </span>
+                <span class="text-sm font-medium text-green-600">
+                  {{ diagnosis.confidence|floatformat:1 }}% confidence
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mt-4">
+              <div class="flex items-center text-sm text-gray-500">
+                <i data-lucide="calendar" class="h-4 w-4 mr-1"></i>
+                {{ diagnosis.created_at|date:"M d, Y" }}
+              </div>
+              <a
+                href="#"
+                class="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                View Details
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="p-6 text-center text-gray-500">
+        No diagnoses found matching your criteria.
+      </div>
+      {% endfor %}
     </div>
 
-    <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex items-center">
-            <div class="p-3 bg-blue-100 rounded-lg mr-4"><i data-lucide="file-text" class="h-6 w-6 text-blue-600"></i></div>
-            <div>
-                <h3 class="text-2xl font-bold text-gray-900">{{ total_diagnoses }}</h3>
-                <p class="text-sm text-gray-600">Total Diagnoses</p>
-            </div>
-        </div>
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex items-center">
-            <div class="p-3 bg-red-100 rounded-lg mr-4"><i data-lucide="bug" class="h-6 w-6 text-red-600"></i></div>
-            <div>
-                <h3 class="text-2xl font-bold text-gray-900">{{ disease_frequency|length }}</h3>
-                <p class="text-sm text-gray-600">Diseases Identified</p>
-            </div>
-        </div>
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex items-center">
-            <div class="p-3 bg-yellow-100 rounded-lg mr-4"><i data-lucide="trending-up" class="h-6 w-6 text-yellow-600"></i></div>
-            <div>
-                <h3 class="text-2xl font-bold text-gray-900">{{ avg_confidence|floatformat:1 }}%</h3>
-                <p class="text-sm text-gray-600">Avg. Confidence</p>
-            </div>
-        </div>
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex items-center">
-            <div class="p-3 bg-green-100 rounded-lg mr-4"><i data-lucide="leaf" class="h-6 w-6 text-green-600"></i></div>
-            <div>
-                <h6 class="text-1xl font-bold text-gray-900">{{ disease_frequency.0.disease_name|default:"N/A" }}</h6>
-                <p class="text-sm text-gray-600">Most Common</p>
-            </div>
-        </div>
+    <!-- Pagination -->
+    {% if diagnoses_page.has_other_pages %}
+    <div class="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="text-sm text-gray-600">
+        Page {{ diagnoses_page.number }} of {{ diagnoses_page.paginator.num_pages }}.
+      </div>
+      <div class="flex gap-2">
+        {% if diagnoses_page.has_previous %}
+        <a
+          href="?page={{ diagnoses_page.previous_page_number }}&search={{ search_term }}&severity={{ filter_severity }}"
+          class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+        >
+          Previous
+        </a>
+        {% endif %}
+        {% if diagnoses_page.has_next %}
+        <a
+          href="?page={{ diagnoses_page.next_page_number }}&search={{ search_term }}&severity={{ filter_severity }}"
+          class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+        >
+          Next
+        </a>
+        {% endif %}
+      </div>
     </div>
-
-    <!-- List View Container -->
-    <div id="list-view">
-        <!-- Filters -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <form id="history-filter-form" method="get" action="{% url 'history:list' %}" class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                <div class="relative">
-                    <i data-lucide="search" class="absolute left-3 top-2.5 h-4 w-4 text-gray-400"></i>
-                    <input type="text" name="search" placeholder="Search diseases..." value="{{ search_term }}" class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                </div>
-                <div class="flex items-center space-x-4">
-                    <div class="flex items-center space-x-2">
-                        <i data-lucide="filter" class="h-4 w-4 text-gray-500"></i>
-                        <select name="severity" class="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                            <option value="all" {% if filter_severity == 'all' %}selected{% endif %}>All Severities</option>
-                            <option value="Low" {% if filter_severity == 'Low' %}selected{% endif %}>Low</option>
-                            <option value="Medium" {% if filter_severity == 'Medium' %}selected{% endif %}>Medium</option>
-                            <option value="High" {% if filter_severity == 'High' %}selected{% endif %}>High</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors">Apply</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Diagnoses List -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="px-6 py-4 border-b border-gray-200"><h2 class="text-lg font-semibold text-gray-900">Recent Diagnoses ({{ diagnoses_page.paginator.count }})</h2></div>
-            <div class="divide-y divide-gray-200">
-                {% for diagnosis in diagnoses_page %}
-                <div class="p-6 hover:bg-gray-50 transition-colors">
-                    <div class="flex items-start space-x-4">
-                        <img src="{{ diagnosis.image.url }}" alt="Crop diagnosis" class="w-16 h-16 rounded-lg object-cover border border-gray-200">
-                        <div class="flex-grow">
-                            <div class="flex items-start justify-between">
-                                <div>
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ diagnosis.disease_name }}</h3>
-                                    <p class="text-sm text-gray-600 mb-2">Affected: {{ diagnosis.affected_plant_part }}</p>
-                                    <p class="text-sm text-gray-700 mb-3">{{ diagnosis.description|truncatewords:20 }}</p>
-                                </div>
-                                <div class="flex flex-col items-end space-y-2 flex-shrink-0 ml-4">
-                                    <span class="px-2 py-1 rounded-full text-xs font-medium {% if diagnosis.severity == 'Low' %}bg-green-100 text-green-800{% elif diagnosis.severity == 'Medium' %}bg-yellow-100 text-yellow-800{% else %}bg-red-100 text-red-800{% endif %}">{{ diagnosis.severity }}</span>
-                                    <span class="text-sm font-medium text-green-600">{{ diagnosis.confidence|floatformat:1 }}% confidence</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between mt-4">
-                                <div class="flex items-center text-sm text-gray-500"><i data-lucide="calendar" class="h-4 w-4 mr-1"></i>{{ diagnosis.created_at|date:"M d, Y" }}</div>
-                                <a href="#" class="text-sm text-blue-600 hover:text-blue-800 font-medium">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <p class="p-6 text-center text-gray-500">No diagnoses found matching your criteria.</p>
-                {% endfor %}
-            </div>
-            <!-- Pagination -->
-            {% if diagnoses_page.has_other_pages %}
-            <div class="p-4 border-t border-gray-200 flex items-center justify-between">
-                <div class="text-sm text-gray-600">Page {{ diagnoses_page.number }} of {{ diagnoses_page.paginator.num_pages }}.</div>
-                <div>
-                    {% if diagnoses_page.has_previous %}<a href="?page={{ diagnoses_page.previous_page_number }}&search={{ search_term }}&severity={{ filter_severity }}" class="nav-link relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Previous</a>{% endif %}
-                    {% if diagnoses_page.has_next %}<a href="?page={{ diagnoses_page.next_page_number }}&search={{ search_term }}&severity={{ filter_severity }}" class="nav-link ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Next</a>{% endif %}
-                </div>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Analytics View Container -->
-    <div id="analytics-view" class="hidden space-y-8">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">Monthly Diagnosis Trends</h2>
-           <div class="relative h-72">
-                <canvas id="monthlyTrendChart" data-labels='{{ monthly_labels|safe }}' data-values='{{ monthly_data|safe }}'></canvas>
-            </div>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4">Severity Distribution</h2>
-                <div class="relative h-64">
-                    <canvas id="severityPieChart" data-labels='{{ severity_labels|safe }}' data-values='{{ severity_data|safe }}'></canvas>
-                </div>
-            </div>
-           <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4">Most Common Diseases</h2>
-                <div class="space-y-3">
-                    {% for item in disease_frequency|slice:":5" %}
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <div class="flex items-center min-w-0">
-                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
-                                <span class="font-bold text-green-700">{{ forloop.counter }}</span>
-                            </div>
-                            <span class="font-semibold text-gray-800 truncate" title="{{ item.disease_name }}">{{ item.disease_name }}</span>
-                        </div>
-                        <span class="text-sm font-medium text-gray-500 whitespace-nowrap ml-4">{{ item.count }} cases</span>
-                    </div>
-                    {% empty %}
-                    <div class="text-center py-8">
-                        <i data-lucide="info" class="h-8 w-8 mx-auto text-gray-400"></i>
-                        <p class="mt-2 text-gray-500 text-sm">No disease data available to rank.</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
+    {% endif %}
+  </div>
 </div>

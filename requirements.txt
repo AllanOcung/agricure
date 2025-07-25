@@ -12,6 +12,11 @@ torch==2.0.1
 torchvision==0.15.2
 numpy==1.24.3
 
+# Keras and TensorFlow (for plant disease model)
+keras>=2.12
+# tensorflow version must match keras, e.g. 2.13 or newer for keras 3.x
+tensorflow>=2.12
+
 # Optional: For development
 django-debug-toolbar==4.2.0
 

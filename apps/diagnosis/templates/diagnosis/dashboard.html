@@ -1,213 +1,257 @@
-{% extends "base.html" %} 
-{% load static %} 
-{% block title %}Dashboard - Agricure{% endblock %} 
-{% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <!-- Header -->
-  <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">
-      Crop Diagnosis Dashboard
-    </h1>
-    <p class="text-gray-600">
-      Upload an image of your crop to get instant AI-powered disease diagnosis
-    </p>
-  </div>
-
-  <!-- Quick Stats -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <div
-      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex items-center"
-    >
-      <div class="p-3 bg-green-100 rounded-lg">
-        <i data-lucide="leaf" class="h-6 w-6 text-green-600"></i>
-      </div>
-      <div class="ml-4">
-        <h3
-          id="diagnoses-this-month-stat"
-          class="text-lg font-semibold text-gray-900"
-        >
-          {{ stats.diagnoses_this_month }}
-        </h3>
-        <p class="text-sm text-gray-600">Diagnoses This Month</p>
-      </div>
-    </div>
-    <div
-      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex items-center"
-    >
-      <div class="p-3 bg-blue-100 rounded-lg">
-        <i data-lucide="trending-up" class="h-6 w-6 text-blue-600"></i>
-      </div>
-      <div class="ml-4">
-        <h3 id="accuracy-rate-stat" class="text-lg font-semibold text-gray-900">
-          {{ stats.accuracy_rate }}%
-        </h3>
-        <p class="text-sm text-gray-600">Accuracy Rate</p>
-      </div>
-    </div>
-    <div
-      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex items-center"
-    >
-      <div class="p-3 bg-orange-100 rounded-lg">
-        <i data-lucide="bug" class="h-6 w-6 text-orange-600"></i>
-      </div>
-      <div class="ml-4">
-        <h3
-          id="diseases-detected-stat"
-          class="text-lg font-semibold text-gray-900"
-        >
-          {{ stats.diseases_detected }}
-        </h3>
-        <p class="text-sm text-gray-600">Diseases Detected</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    <!-- Upload Section -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">
-        Upload Crop Image
-      </h2>
-      <form id="upload-form">
-        {% csrf_token %}
-
-        <div
-          id="form-errors"
-          class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm mb-4"
-        ></div>
-
-        {{ form.image }}
-
-        <!-- Initial Upload UI -->
-        <div id="initial-state-ui">
-          <div
-            id="drag-drop-area"
-            class="border-2 border-dashed rounded-lg p-8 text-center transition-colors border-gray-300 hover:border-green-400 hover:bg-green-50"
-          >
-            <i
-              data-lucide="upload"
-              class="h-12 w-12 text-gray-400 mx-auto mb-4"
-            ></i>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">
-              Drop your crop image here
-            </h3>
-            <p class="text-gray-600 mb-4">or click to browse your files</p>
-            <label
-              for="id_image"
-              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 cursor-pointer transition-colors"
-            >
-              <i data-lucide="camera" class="h-4 w-4 mr-2"></i> Choose Image
-            </label>
-            <p class="text-xs text-gray-500 mt-2">
-              Supports: JPG, PNG, WebP (Max 10MB)
-            </p>
-          </div>
+{% extends 'diagnosis/base.html' %} {% load static %} 
+{% block title %}Welcome back, {{ user.first_name|default:user.email }} - Agricure{% endblock %} 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'diagnosis/css/dashboard_main.css' %}" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %} {% block content %}
+<div class="dashboard-container">
+  <!-- Hero Section with Stats -->
+  <div class="hero-section">
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h2>Ready to monitor your crops today?</h2>
         </div>
 
-        <!-- Preview UI (initially hidden) -->
-        <div id="preview-state-ui" class="hidden">
-          <div class="space-y-4">
-            <div class="relative">
-              <img
-                id="preview-image"
-                src=""
-                alt="Crop preview"
-                class="w-full h-64 object-cover rounded-lg border border-gray-200"
-              />
-              <button
-                type="button"
-                id="reset-upload"
-                class="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors text-xl leading-none flex items-center justify-center"
-                style="width: 24px; height: 24px"
-              >
-                &times;
-              </button>
+        <div class="hero-stats">
+          <div class="stat-card">
+            <div class="stat-content">
+              <p class="stat-number">{{ stats.diagnoses_this_month }}</p>
+              <p class="stat-label">Diagnoses This Month</p>
             </div>
-            <div class="flex space-x-3">
-              <button
-                type="submit"
-                id="analyze-btn"
-                class="flex-1 flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                <i data-lucide="image" class="h-4 w-4 mr-2"></i> Analyze Crop
-              </button>
-              <label
-                for="id_image"
-                class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 cursor-pointer transition-colors"
-              >
-                Upload New
-              </label>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-content">
+              <p class="stat-number">{{ stats.diseases_detected }}</p>
+              <p class="stat-label">Diseases Detected</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-content">
+              <p class="stat-number">{{ stats.accuracy_rate }}%</p>
+              <p class="stat-label">Accuracy Rate</p>
             </div>
           </div>
         </div>
-      </form>
-    </div>
-
-    <!-- Results Section -->
-    <div
-      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
-      id="results-section"
-    >
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">
-        Diagnosis Results
-      </h2>
-      <div id="results-content">
-        <div class="text-center py-12" id="results-placeholder">
-          <i
-            data-lucide="image"
-            class="h-16 w-16 text-gray-300 mx-auto mb-4"
-          ></i>
-          <p class="text-gray-500">
-            Upload and analyze an image to see results
-          </p>
-        </div>
-        <div class="text-center py-12 hidden" id="results-loader">
-          <i
-            data-lucide="loader-2"
-            class="animate-spin h-16 w-16 text-green-600 mx-auto mb-4"
-          ></i>
-          <p class="text-gray-900 font-medium">Analyzing your crop image...</p>
-          <p class="text-gray-600 text-sm mt-1">This may take a few moments</p>
-        </div>
       </div>
     </div>
   </div>
 
-  <!-- Tips Section -->
-  <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-    <div class="flex items-start">
-      <i
-        data-lucide="alert-triangle"
-        class="h-6 w-6 text-blue-600 mr-3 mt-0.5 flex-shrink-0"
-      ></i>
-      <div>
-        <h3 class="font-semibold text-blue-900 mb-2">
-          Tips for Better Results
-        </h3>
-        <ul class="text-sm text-blue-800 space-y-1 list-disc list-inside">
-          <li>Take clear, well-lit photos showing the affected plant parts</li>
-          <li>Include both healthy and diseased areas for comparison</li>
-          <li>Avoid blurry or dark images for accurate diagnosis</li>
-          <li>Multiple angles of the same issue can improve accuracy</li>
-        </ul>
+  <!-- Main Content Grid -->
+  <div class="content-grid">
+    <!-- Visual Analytics Section -->
+    <div class="analytics-section">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title text-primary">Visual Analytics</h3>
+          <span class="badge">Last 24hrs</span>
+        </div>
+        <div class="card-content">
+          <div class="chart-section">
+            <h4 class="chart-title">Environmental Sensor Trends</h4>
+            <div class="chart-container">
+              <canvas id="sensorTrendsChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-section">
+            <h4 class="chart-title">Disease Frequency Over Time</h4>
+            <div class="chart-container">
+              <canvas id="diseaseFrequencyChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IoT Device Summary -->
+    <div class="iot-section">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title text-orange">
+            <i class="fas fa-activity"></i>
+            IoT Device Summary
+          </h3>
+        </div>
+        <div class="card-content">
+          <div class="device-list">
+            <div class="device-item bg-blue">
+              <div class="device-info">
+                <i class="fas fa-tint device-icon"></i>
+                <div class="device-details">
+                  <p class="device-name">Soil Moisture Sensor</p>
+                  <p class="device-status online">
+                    <span class="status-dot"></span>
+                    Online
+                  </p>
+                </div>
+              </div>
+              <span class="device-value text-blue">38%</span>
+            </div>
+
+            <div class="device-item bg-red">
+              <div class="device-info">
+                <i class="fas fa-thermometer-half device-icon"></i>
+                <div class="device-details">
+                  <p class="device-name">Temperature Sensor</p>
+                  <p class="device-status online">
+                    <span class="status-dot"></span>
+                    Online
+                  </p>
+                </div>
+              </div>
+              <span class="device-value text-red">27°C</span>
+            </div>
+
+            <div class="device-item bg-purple">
+              <div class="device-info">
+                <i class="fas fa-wind device-icon"></i>
+                <div class="device-details">
+                  <p class="device-name">Humidity Sensor</p>
+                  <p class="device-status online">
+                    <span class="status-dot"></span>
+                    Online
+                  </p>
+                </div>
+              </div>
+              <span class="device-value text-purple">62%</span>
+            </div>
+          </div>
+
+          <div class="divider-line"></div>
+
+          <div class="device-summary1">
+            <div class="devices-summary">
+              <p>3 devices connected</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Diagnosis Results -->
+    <div class="diagnosis-section">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title text-primary">Recent Diagnosis Results</h3>
+          <span class="badge">({{ diagnoses|length }}) Results</span>
+        </div>
+        <div class="card-content">
+          <div class="diagnosis-list">
+            {% for diagnosis in diagnoses %}
+            <div class="diagnosis-item">
+              <div class="diagnosis-info">
+                <div class="diagnosis-icon">
+                  <i class="fas fa-leaf"></i>
+                </div>
+                <div class="diagnosis-details">
+                  <h4>Affected part: {{ diagnosis.affected_plant_part|title }}</h4>
+                  <p class="disease-name">{{ diagnosis.disease_name }}</p>
+                  <p class="diagnosis-date">
+                    <i class="fas fa-clock"></i>
+                    <span class="local-datetime" data-datetime="{{ diagnosis.created_at|date:'c' }}">
+                      {{ diagnosis.created_at|date:"Y-m-d H:i" }} (loading...)
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div class="diagnosis-actions">
+                <span
+                  class="severity-badge {% if diagnosis.severity|lower == 'severe' %}severe {% elif diagnosis.severity|lower == 'moderate' %}moderate {% else %}low{% endif %}"
+                >
+                  {{ diagnosis.severity|title }}
+                </span>
+                {% if diagnosis.confidence %}
+                <p class="confidence">
+                  {{ diagnosis.confidence|floatformat:1 }}% confidence
+                </p>
+                {% endif %}
+                <a href="" class="btn-view">
+                  <i class="fas fa-eye"></i>
+                  View Details
+                </a>
+              </div>
+            </div>
+            {% empty %}
+            <div class="no-diagnosis">
+              <p>No diagnosis results found.</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="notifications-section">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title text-orange">
+            <i class="fas fa-exclamation-circle"></i>
+            Notifications
+            <span class="badge badge-danger">3</span>
+          </h3>
+        </div>
+        <div class="card-content">
+          <div class="notification-list">
+            <div class="notification-item">
+              <i class="fas fa-wind notification-icon"></i>
+              <div class="notification-content">
+                <h4>Weather Alert</h4>
+                <p>Rain expected tomorrow — avoid spraying.</p>
+                <span class="notification-time">2 hours ago</span>
+              </div>
+            </div>
+
+            <div class="notification-item">
+              <i class="fas fa-exclamation-triangle notification-icon"></i>
+              <div class="notification-content">
+                <h4>Disease Alert</h4>
+                <p>Late blight is rising in your region.</p>
+                <span class="notification-time">4 hours ago</span>
+              </div>
+            </div>
+
+            <div class="notification-item">
+              <i class="fas fa-thermometer-half notification-icon"></i>
+              <div class="notification-content">
+                <h4>Temperature Alert</h4>
+                <p>Optimal temperature for spraying detected.</p>
+                <span class="notification-time">6 hours ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
 {% endblock %} {% block extra_js %}
-<style>
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  .animate-fade-in {
-    animation: fade-in 0.5s ease-out forwards;
-  }
-</style>
+<script src="{% static 'diagnosis/js/dashboard_charts.js' %}"></script>
+<script>
+  // Convert server datetime to user's local time
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".server-datetime").forEach(function (el) {
+      var iso = el.getAttribute("data-datetime");
+      if (iso) {
+        var local = new Date(iso);
+        var options = {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        };
+        var localStr = local.toLocaleString(undefined, options);
+        var localSpan = el.parentElement.querySelector(".local-datetime");
+        if (localSpan) {
+          localSpan.textContent = " (" + localStr + " local)";
+        }
+      }
+    });
+  });
+</script>
 {% endblock %}

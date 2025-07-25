@@ -1,0 +1,130 @@
+
+{% load static %}
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">Crop Diagnosis Dashboard</h1>
+    <p class="dashboard-subtitle">
+      Upload an image of your crop to get instant AI-powered disease diagnosis
+    </p>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-green">
+        <i data-lucide="leaf" class="stat-icon-svg"></i>
+      </div>
+      <div class="stat-content">
+        <h3 id="diagnoses-this-month-stat" class="stat-value">
+          {{ stats.diagnoses_this_month }}
+        </h3>
+        <p class="stat-label">Diagnoses This Month</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-blue">
+        <i data-lucide="trending-up" class="stat-icon-svg"></i>
+      </div>
+      <div class="stat-content">
+        <h3 id="accuracy-rate-stat" class="stat-value">
+          {{ stats.accuracy_rate }}%
+        </h3>
+        <p class="stat-label">Accuracy Rate</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-orange">
+        <i data-lucide="bug" class="stat-icon-svg"></i>
+      </div>
+      <div class="stat-content">
+        <h3 id="diseases-detected-stat" class="stat-value">
+          {{ stats.diseases_detected }}
+        </h3>
+        <p class="stat-label">Diseases Detected</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <!-- Upload Section -->
+    <div class="upload-section">
+      <h2 class="section-title">Upload Crop Image</h2>
+      <form id="upload-form">
+        {% csrf_token %}
+
+        <div id="form-errors" class="form-errors hidden"></div>
+
+        {{ form.image }}
+
+        <!-- Initial Upload UI -->
+        <div id="initial-state-ui">
+          <div id="drag-drop-area" class="drag-drop-area">
+            <i data-lucide="upload" class="upload-icon"></i>
+            <h3 class="upload-title">Drop your crop image here</h3>
+            <p class="upload-instruction">or click to browse your files</p>
+            <label for="id_image" class="upload-button">
+              <i data-lucide="camera" class="button-icon"></i> Choose Image
+            </label>
+            <p class="upload-note">Supports: JPG, PNG, WebP (Max 10MB)</p>
+          </div>
+        </div>
+
+        <!-- Preview UI (initially hidden) -->
+        <div id="preview-state-ui" class="hidden">
+          <div class="preview-container">
+            <div class="preview-image-wrapper">
+              <img id="preview-image" src="" alt="Crop preview" class="preview-image"/>
+              <button type="button" id="reset-upload" class="reset-button">
+                &times;
+              </button>
+            </div>
+            <div class="preview-buttons">
+              <button type="submit" id="analyze-btn" class="analyze-button">
+                <i data-lucide="image" class="button-icon"></i> Analyze Crop
+              </button>
+              <label for="id_image" class="upload-new-button">
+                Upload New
+              </label>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section" id="results-section">
+      <h2 class="section-title">Diagnosis Results</h2>
+      <div id="results-content">
+        <div class="results-placeholder" id="results-placeholder">
+          <i data-lucide="image" class="placeholder-icon"></i>
+          <p class="placeholder-text">Upload and analyze an image to see results</p>
+        </div>
+        <div class="results-loader hidden" id="results-loader">
+          <i data-lucide="loader-2" class="loader-icon"></i>
+          <p class="loader-text">Analyzing your crop image...</p>
+          <p class="loader-subtext">This may take a few moments</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips Section -->
+  <div class="tips-section">
+    <div class="tips-content">
+      <i data-lucide="alert-triangle" class="tips-icon"></i>
+      <div>
+        <h3 class="tips-title">Tips for Better Results</h3>
+        <ul class="tips-list">
+          <li>Take clear, well-lit photos showing the affected plant parts</li>
+          <li>Include both healthy and diseased areas for comparison</li>
+          <li>Avoid blurry or dark images for accurate diagnosis</li>
+          <li>Multiple angles of the same issue can improve accuracy</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% block extra_js %}
+<link rel="stylesheet" href="{% static 'diagnosis/css/dashboard_partial.css' %}">
+{% endblock %}

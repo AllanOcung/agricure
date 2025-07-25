@@ -1,0 +1,79 @@
+{% extends "diagnosis/base.html" %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-10 px-4">
+  <h1 class="text-2xl font-bold mb-6 text-gray-900">Edit Profile</h1>
+  <form method="post" enctype="multipart/form-data" class="space-y-6 bg-white p-6 rounded-lg shadow border">
+    {% csrf_token %}
+    {% if messages %}
+      <ul class="mb-4">
+        {% for message in messages %}
+          <li class="text-green-700">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- User fields -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Username</label>
+        {{ user_form.username }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Email</label>
+        {{ user_form.email }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">First Name</label>
+        {{ user_form.first_name }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Last Name</label>
+        {{ user_form.last_name }}
+      </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Profile fields -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+        {{ profile_form.phone_number }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Date of Birth</label>
+        {{ profile_form.date_of_birth }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Location</label>
+        {{ profile_form.location }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Website</label>
+        {{ profile_form.website }}
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-gray-700">Bio</label>
+        {{ profile_form.bio }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Avatar</label>
+        {{ profile_form.avatar }}
+        {% if profile_form.instance.avatar %}
+          <img src="{{ profile_form.instance.avatar.url }}" alt="Current Avatar" class="mt-2 w-20 h-20 rounded-full object-cover border">
+        {% endif %}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Role</label>
+        {{ profile_form.role }}
+      </div>
+    </div>
+
+    <div class="flex justify-end mt-6">
+      <a href="{% url 'accounts:profile' %}" class="mr-4 px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300">Cancel</a>
+      <button type="submit" class="px-6 py-2 rounded bg-green-600 text-white font-semibold hover:bg-green-700">Save Changes</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

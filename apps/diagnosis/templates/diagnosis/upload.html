@@ -1,0 +1,167 @@
+{% extends "diagnosis/base.html" %} 
+{% load static %} 
+{% block title %}Dashboard - Agricure{% endblock %} 
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">
+      Crop Diagnosis Dashboard
+    </h1>
+    <p class="text-gray-600">
+      Upload an image of your crop to get instant AI-powered disease diagnosis
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Upload Section -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">
+        Upload Crop Image
+      </h2>
+      <form id="upload-form">
+        {% csrf_token %}
+
+        <div
+          id="form-errors"
+          class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm mb-4"
+        ></div>
+
+        {{ form.image }}
+
+        <!-- Initial Upload UI -->
+        <div id="initial-state-ui">
+          <div
+            id="drag-drop-area"
+            class="border-2 border-dashed rounded-lg p-8 text-center transition-colors border-gray-300 hover:border-green-400 hover:bg-green-50"
+          >
+            <i
+              data-lucide="upload"
+              class="h-12 w-12 text-gray-400 mx-auto mb-4"
+            ></i>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">
+              Drop your crop image here
+            </h3>
+            <p class="text-gray-600 mb-4">or click to browse your files</p>
+            <label
+              for="id_image"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 cursor-pointer transition-colors"
+            >
+              <i data-lucide="camera" class="h-4 w-4 mr-2"></i> Choose Image
+            </label>
+            <p class="text-xs text-gray-500 mt-2">
+              Supports: JPG, PNG, WebP (Max 10MB)
+            </p>
+          </div>
+        </div>
+
+        <!-- Preview UI (initially hidden) -->
+        <div id="preview-state-ui" class="hidden">
+          <div class="space-y-4">
+            <div class="relative">
+              <img
+                id="preview-image"
+                src=""
+                alt="Crop preview"
+                class="w-full h-64 object-cover rounded-lg border border-gray-200"
+              />
+              <button
+                type="button"
+                id="reset-upload"
+                class="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors text-xl leading-none flex items-center justify-center"
+                style="width: 24px; height: 24px"
+              >
+                &times;
+              </button>
+            </div>
+            <div class="flex space-x-3">
+              <button
+                type="submit"
+                id="analyze-btn"
+                class="flex-1 flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <i data-lucide="image" class="h-4 w-4 mr-2"></i> Analyze Crop
+              </button>
+              <label
+                for="id_image"
+                class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 cursor-pointer transition-colors"
+              >
+                Upload New
+              </label>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+      id="results-section"
+    >
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">
+        Diagnosis Results
+      </h2>
+      <div id="results-content">
+        <div class="text-center py-12" id="results-placeholder">
+          <i
+            data-lucide="image"
+            class="h-16 w-16 text-gray-300 mx-auto mb-4"
+          ></i>
+          <p class="text-gray-500">
+            Upload and analyze an image to see results
+          </p>
+        </div>
+        <div class="text-center py-12 hidden" id="results-loader">
+          <i
+            data-lucide="loader-2"
+            class="animate-spin h-16 w-16 text-green-600 mx-auto mb-4"
+          ></i>
+          <p class="text-gray-900 font-medium">Analyzing your crop image...</p>
+          <p class="text-gray-600 text-sm mt-1">This may take a few moments</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips Section -->
+  <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+    <div class="flex items-start">
+      <i
+        data-lucide="alert-triangle"
+        class="h-6 w-6 text-blue-600 mr-3 mt-0.5 flex-shrink-0"
+      ></i>
+      <div>
+        <h3 class="font-semibold text-blue-900 mb-2">
+          Tips for Better Results
+        </h3>
+        <ul class="text-sm text-blue-800 space-y-1 list-disc list-inside">
+          <li>Take clear, well-lit photos showing the affected plant parts</li>
+          <li>Include both healthy and diseased areas for comparison</li>
+          <li>Avoid blurry or dark images for accurate diagnosis</li>
+          <li>Multiple angles of the same issue can improve accuracy</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+  }
+</style>
+{% endblock %}

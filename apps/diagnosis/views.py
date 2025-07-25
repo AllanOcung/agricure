@@ -1,3 +1,253 @@
+# import random
+# import numpy as np
+# from PIL import Image
+# import os
+# from django.http import JsonResponse
+# from django.shortcuts import render, redirect, get_object_or_404
+# from django.contrib.auth.decorators import login_required
+# from django.template.loader import render_to_string
+# from .forms import DiagnosisForm
+# from .models import Diagnosis
+# from datetime import datetime, timedelta
+# from django.utils import timezone
+# from apps.recommendations.models import Notification
+# # import tensorflow as tf
+# from keras.models import load_model
+# from keras.preprocessing import image
+# from keras.layers import DepthwiseConv2D
+
+
+# # Simplified class names for tomato-specific model
+# TOMATO_DISEASE_CLASSES = [
+#     "Tomato_healthy",
+#     "Tomato_Leaf_curl"
+# ]
+
+# # Disease info specific to tomato leaf curl
+# TOMATO_DISEASE_INFO = {
+#     "Tomato_healthy": {
+#         "description": "No disease detected. Tomato plant appears healthy.",
+#         "recommendations": [
+#             "Continue regular monitoring.",
+#             "Maintain good cultural practices.",
+#             "Ensure proper watering and fertilization."
+#         ]
+#     },
+#     "Tomato_Leaf_curl": {
+#         "description": "Tomato leaf curl disease caused by viruses or environmental stress.",
+#         "recommendations": [
+#             "Remove and destroy infected plants to prevent spread.",
+#             "Control whitefly populations which spread the virus.",
+#             "Use resistant tomato varieties if available.",
+#             "Avoid excessive nitrogen fertilization.",
+#             "Maintain consistent soil moisture to prevent stress."
+#         ]
+#     }
+# }
+
+# # Load the TensorFlow Keras model
+# MODEL_PATH = os.path.join(os.path.dirname(__file__), 'model', 'tomato_model.h5')
+# model = load_model(MODEL_PATH)
+
+# def preprocess_image(img_path, target_size=(256, 256)):
+#     """
+#     Preprocess image for TensorFlow model prediction
+#     """
+#     img = image.load_img(img_path, target_size=target_size)
+#     img_array = image.img_to_array(img)
+#     img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+#     img_array = img_array / 255.0  # Normalize to [0,1]
+#     return img_array
+
+# def predict_disease(image_file):
+#     """
+#     Predict tomato leaf disease using TensorFlow Keras model
+#     """
+#     # Preprocess the image
+#     img_array = preprocess_image(image_file)
+    
+#     # Make prediction
+#     predictions = model.predict(img_array)
+#     predicted_class = np.argmax(predictions, axis=1)[0]
+#     confidence = float(np.max(predictions)) * 100
+    
+#     disease_name = TOMATO_DISEASE_CLASSES[predicted_class]
+#     info = TOMATO_DISEASE_INFO.get(disease_name, {})
+    
+#     return {
+#         "disease_name": disease_name.replace('_', ' '),
+#         "severity": "High" if confidence > 90 else ("Medium" if confidence > 70 else "Low"),
+#         "affected_plant_part": "Leaves",
+#         "confidence": round(confidence, 2),
+#         "description": info.get("description", ""),
+#         "recommendations_list": info.get("recommendations", []),
+#     }
+
+# # The rest of your Django views can remain the same since they don't interact directly with the model
+# # Only the predict_disease function has been modified
+
+# @login_required
+# def dashboard_view(request):
+#     # Get the latest diagnosis confidence for the user, if any
+#     latest_confidence = None
+#     latest_diag = Diagnosis.objects.filter(user=request.user).order_by('-created_at').first()
+#     if latest_diag:
+#         latest_confidence = latest_diag.confidence
+
+#     stats = {
+#         'diagnoses_this_month': Diagnosis.objects.filter(user=request.user, created_at__gte=timezone.now() - timedelta(days=30)).count(),
+#         'accuracy_rate': latest_confidence if latest_confidence is not None else 0,
+#         'diseases_detected': Diagnosis.objects.filter(user=request.user).values('disease_name').distinct().count()
+#     }
+
+#     # Calculate unread alert notifications for the user
+#     unread_alerts = 0
+#     if request.user.is_authenticated:
+#         unread_alerts = request.user.notifications.filter(type='ALERT', is_read=False).count()
+
+#     # Add recent diagnoses to context (limit to 5 most recent)
+#     recent_diagnoses = Diagnosis.objects.filter(user=request.user).order_by('-created_at')[:5]
+
+#     context = {
+#         'stats': stats,
+#         'unread_alerts': unread_alerts,
+#         'diagnoses': recent_diagnoses,
+#         'title': "Dashboard - Agricure"
+#     }
+
+#     return render(request, 'diagnosis/dashboard.html', context)
+
+# @login_required
+# def upload_view(request):
+#     # Handle AJAX POST requests for diagnosis
+#     if request.method == 'POST':
+#         form = DiagnosisForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             diagnosis = form.save(commit=False)
+#             diagnosis.user = request.user
+
+#             # Use real AI prediction
+#             prediction = predict_disease(request.FILES['image'])
+
+#             diagnosis.disease_name = prediction['disease_name']
+#             diagnosis.severity = prediction['severity']
+#             diagnosis.affected_plant_part = prediction['affected_plant_part']
+#             diagnosis.confidence = prediction['confidence']
+#             diagnosis.description = prediction['description']
+#             diagnosis.recommendations = "\n".join(prediction['recommendations_list'])
+
+#             diagnosis.save()
+
+#             # Create an ALERT if a disease (not healthy) is detected
+#             if 'healthy' not in diagnosis.disease_name.lower():
+#                 Notification.objects.create(
+#                     user=request.user,
+#                     title=f"Disease Detected: {diagnosis.disease_name}",
+#                     message=f"{diagnosis.description}\n\nRecommendations:\n{diagnosis.recommendations}",
+#                     type='ALERT'
+#                 )
+
+#             # Always create a RECOMMENDATION notification if recommendations exist
+#             if diagnosis.recommendations.strip():
+#                 Notification.objects.create(
+#                     user=request.user,
+#                     title=f"Recommendations for {diagnosis.disease_name}",
+#                     message=f"{diagnosis.recommendations}",
+#                     type='RECOMMENDATION'
+#                 )
+
+#             # --- START: Recalculate stats after saving ---
+#             user_diagnoses = Diagnosis.objects.filter(user=request.user)
+#             last_30_days = timezone.now() - timedelta(days=30)
+#             updated_stats = {
+#                 'diagnoses_this_month': user_diagnoses.filter(created_at__gte=last_30_days).count(),
+#                 'accuracy_rate': 95, # This can remain static for now
+#                 'diseases_detected': user_diagnoses.values('disease_name').distinct().count()
+#             }
+#             # --- END: Recalculate stats after saving ---
+
+#             # Prepare data to be sent back as JSON
+#             diagnosis_data = {
+#                 'disease_name': diagnosis.disease_name,
+#                 'severity': diagnosis.severity,
+#                 'affected_plant_part': diagnosis.affected_plant_part,
+#                 'confidence': diagnosis.confidence,
+#                 'description': diagnosis.description,
+#                 'recommendations_list': diagnosis.recommendations.splitlines(),
+#             }
+
+#             # Combine diagnosis and stats into a single response
+#             response_data = {
+#                 'diagnosis': diagnosis_data,
+#                 'stats': updated_stats
+#             }
+
+#             return JsonResponse(response_data)
+#         else:
+#             # Return form errors as JSON with a 400 status
+#             return JsonResponse({'errors': form.errors}, status=400)
+
+#     # Handle standard GET requests (initial page load)
+#     user_diagnoses = Diagnosis.objects.filter(user=request.user)
+#     last_30_days = timezone.now() - timedelta(days=30)
+
+#     # Get the latest diagnosis confidence for the user, if any
+#     latest_confidence = None
+#     latest_diag = user_diagnoses.order_by('-created_at').first()
+#     if latest_diag:
+#         latest_confidence = latest_diag.confidence
+
+#     stats = {
+#         'diagnoses_this_month': user_diagnoses.filter(created_at__gte=last_30_days).count(),
+#         'accuracy_rate': latest_confidence if latest_confidence is not None else 0,
+#         'diseases_detected': user_diagnoses.values('disease_name').distinct().count()
+#     }
+
+#     # Calculate unread alert notifications for the user
+#     unread_alerts = 0
+#     if request.user.is_authenticated:
+#         unread_alerts = request.user.notifications.filter(type='ALERT', is_read=False).count()
+
+#     context = {
+#         'form': DiagnosisForm(), # Always provide an empty form for the initial page
+#         'stats': stats,
+#         'diagnosis': None, # The initial page has no diagnosis result
+#         'unread_alerts': unread_alerts
+#     }
+
+#     title = "Dashboard - Agricure"
+
+#     # Handle AJAX requests for page navigation
+#     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+#         html = render_to_string('diagnosis/upload.html', context, request=request)
+#         return JsonResponse({'html': html, 'title': title})
+
+#     context['title'] = title
+#     return render(request, 'diagnosis/upload.html', context)
+
+# @login_required
+# def diagnosis_history_view(request):
+#     diagnoses = Diagnosis.objects.filter(user=request.user).order_by('-created_at')
+#     return render(request, 'diagnosis/diagnosis_history.html', {'diagnoses': diagnoses})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import random
 import torch
 import torch.nn as nn
@@ -442,9 +692,41 @@ def predict_disease(image_file):
         "description": info.get("description", ""),
         "recommendations_list": info.get("recommendations", []),
     }
-
+    
 @login_required
 def dashboard_view(request):
+    # Get the latest diagnosis confidence for the user, if any
+    latest_confidence = None
+    latest_diag = Diagnosis.objects.filter(user=request.user).order_by('-created_at').first()
+    if latest_diag:
+        latest_confidence = latest_diag.confidence
+
+    stats = {
+        'diagnoses_this_month': Diagnosis.objects.filter(user=request.user, created_at__gte=timezone.now() - timedelta(days=30)).count(),
+        'accuracy_rate': latest_confidence if latest_confidence is not None else 0,
+        'diseases_detected': Diagnosis.objects.filter(user=request.user).values('disease_name').distinct().count()
+    }
+
+    # Calculate unread alert notifications for the user
+    unread_alerts = 0
+    if request.user.is_authenticated:
+        unread_alerts = request.user.notifications.filter(type='ALERT', is_read=False).count()
+
+    # Add recent diagnoses to context (limit to 5 most recent)
+    recent_diagnoses = Diagnosis.objects.filter(user=request.user).order_by('-created_at')[:5]
+
+    context = {
+        'stats': stats,
+        'unread_alerts': unread_alerts,
+        'diagnoses': recent_diagnoses,
+        'title': "Dashboard - Agricure"
+    }
+
+    return render(request, 'diagnosis/dashboard.html', context)
+
+
+@login_required
+def upload_view(request):
     # Handle AJAX POST requests for diagnosis
     if request.method == 'POST':
         form = DiagnosisForm(request.POST, request.FILES)
@@ -545,13 +827,13 @@ def dashboard_view(request):
 
     # Handle AJAX requests for page navigation
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html = render_to_string('diagnosis/_dashboard_partial.html', context, request=request)
+        html = render_to_string('diagnosis/upload.html', context, request=request)
         return JsonResponse({'html': html, 'title': title})
 
     context['title'] = title
-    return render(request, 'diagnosis/dashboard.html', context)
+    return render(request, 'diagnosis/upload.html', context)
 
 @login_required
 def diagnosis_history_view(request):
-    diagnoses = Diagnosis.objects.filter(user=request.user).order_by('-created_at')
+    diagnoses = Diagnosis.objects.filter(user=request.user).order_by('-created_at')[:5]
     return render(request, 'diagnosis/diagnosis_history.html', {'diagnoses': diagnoses})
